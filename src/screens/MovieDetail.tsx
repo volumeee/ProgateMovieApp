@@ -6,19 +6,25 @@ import {
   ImageBackground,
   FlatList,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { API_ACCESS_TOKEN } from "@env";
 import { LinearGradient } from "expo-linear-gradient";
 import MovieItem from "../components/MovieItem";
+import { FontAwesome } from "@expo/vector-icons";
+import { Movie } from "../types/app";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MovieDetail = ({ route }: any): JSX.Element => {
   const [movie, setMovie] = useState<any>(null);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { id } = route.params;
 
   useEffect(() => {
     fetchMovieDetail();
     fetchRecommendations();
+    checkFavoriteStatus();
   }, [id]);
 
   const fetchMovieDetail = async (): Promise<void> => {
@@ -59,6 +65,59 @@ const MovieDetail = ({ route }: any): JSX.Element => {
     }
   };
 
+  const addFavorite = async (movie: Movie): Promise<void> => {
+    try {
+      const initialData: string | null =
+        await AsyncStorage.getItem("@FavoriteList");
+      let favMovieList: Movie[] = initialData ? JSON.parse(initialData) : [];
+      favMovieList.push(movie);
+      await AsyncStorage.setItem("@FavoriteList", JSON.stringify(favMovieList));
+      console.log("Added to favorites:", movie);
+      setIsFavorite(true);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const removeFavorite = async (id: number): Promise<void> => {
+    try {
+      const initialData: string | null =
+        await AsyncStorage.getItem("@FavoriteList");
+      if (initialData) {
+        const favMovieList: Movie[] = JSON.parse(initialData).filter(
+          (movie: Movie) => movie.id !== id
+        );
+        await AsyncStorage.setItem(
+          "@FavoriteList",
+          JSON.stringify(favMovieList)
+        );
+        setIsFavorite(false);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const checkIsFavorite = async (id: number): Promise<boolean> => {
+    try {
+      const initialData: string | null =
+        await AsyncStorage.getItem("@FavoriteList");
+      if (initialData) {
+        const favMovieList: Movie[] = JSON.parse(initialData);
+        return favMovieList.some((movie: Movie) => movie.id === id);
+      }
+      return false;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  };
+
+  const checkFavoriteStatus = async (): Promise<void> => {
+    const favoriteStatus = await checkIsFavorite(id);
+    setIsFavorite(favoriteStatus);
+  };
+
   if (!movie) {
     return (
       <View style={styles.loadingContainer}>
@@ -68,7 +127,7 @@ const MovieDetail = ({ route }: any): JSX.Element => {
   }
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <ImageBackground
           source={{
@@ -82,7 +141,28 @@ const MovieDetail = ({ route }: any): JSX.Element => {
             style={styles.gradient}
           >
             <Text style={styles.title}>{movie.title}</Text>
-            <Text style={styles.rating}>⭐ {movie.vote_average}</Text>
+            <View style={styles.flexrow2}>
+              <View style={styles.ratingContainer}>
+                <FontAwesome name="star" size={16} color="yellow" />
+                <Text style={styles.rating}>
+                  {movie.vote_average.toFixed(1)}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={
+                  isFavorite
+                    ? () => removeFavorite(movie.id)
+                    : () => addFavorite(movie)
+                }
+                style={styles.ratingContainer}
+              >
+                <FontAwesome
+                  name={isFavorite ? "heart" : "heart-o"}
+                  size={24}
+                  color="pink"
+                />
+              </TouchableOpacity>
+            </View>
           </LinearGradient>
         </ImageBackground>
         <Text style={styles.overview}>{movie.overview}</Text>
@@ -120,6 +200,7 @@ const MovieDetail = ({ route }: any): JSX.Element => {
               movie={item}
               size={{ width: 100, height: 160 }}
               coverType="poster"
+              onPress={() => item.id}
             />
           )}
           keyExtractor={(item) => item.id.toString()}
@@ -144,6 +225,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 8,
     marginVertical: 8,
+  },
+  flexrow2: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   purpleLabel: {
     width: 20,
@@ -173,9 +258,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+  },
   rating: {
-    fontSize: 18,
-    color: "#fff",
+    color: "yellow",
+    fontWeight: "700",
   },
   overview: {
     padding: 16,

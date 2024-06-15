@@ -34,7 +34,7 @@ const movieLists: MovieListProps[] = [
 ];
 const Home = (): JSX.Element => {
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         {movieLists.map((movieList) => (
           <MovieList

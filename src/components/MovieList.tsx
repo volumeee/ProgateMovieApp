@@ -41,7 +41,7 @@ const MovieList = ({ title, path, coverType }: MovieListProps): JSX.Element => {
       });
   };
 
-  console.log(movies);
+  // console.log(movies);
 
   return (
     <View>
@@ -49,7 +49,6 @@ const MovieList = ({ title, path, coverType }: MovieListProps): JSX.Element => {
         <View style={styles.purpleLabel}></View>
         <Text style={styles.title}>{title}</Text>
       </View>
-      {/* Tambahkan code di bawah ini */}
       <FlatList
         style={{
           ...styles.movieList,
@@ -63,6 +62,7 @@ const MovieList = ({ title, path, coverType }: MovieListProps): JSX.Element => {
             movie={item}
             size={coverImageSize[coverType]}
             coverType={coverType}
+            onPress={() => item.id}
           />
         )}
         keyExtractor={(item) => item.id.toString()}
