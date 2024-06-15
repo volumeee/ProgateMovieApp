@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   TextInput,
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Text,
 } from "react-native";
-import MovieItem from "../MovieItem"; // Ensure this component exists or create it
 import { useNavigation } from "@react-navigation/native";
 import { StackActions } from "@react-navigation/native";
+import { FontAwesome } from "@expo/vector-icons"; // Assuming FontAwesome is imported correctly
+
+import MovieItem from "../MovieItem";
 import { API_ACCESS_TOKEN } from "@env";
 import { Movie } from "../../types/app";
 
-const ITEM_WIDTH = 100; // Adjust according to your design
+const ITEM_WIDTH = 100;
 
 const KeywordSearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
@@ -37,20 +38,29 @@ const KeywordSearch: React.FC = () => {
       .catch((error) => console.error(error));
   };
 
-  useEffect(() => {
+  const handleSearch = () => {
     if (query.length > 0) {
       getMovieList(query);
     }
-  }, [query]);
+  };
 
   return (
     <View>
-      <TextInput
-        style={styles.input}
-        placeholder="Search for a keyword..."
-        value={query}
-        onChangeText={setQuery}
-      />
+      <View style={styles.inputContainer}>
+        <FontAwesome
+          name="search"
+          size={24}
+          color="#555"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Search for a keyword..."
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={handleSearch} // Trigger search when user submits
+        />
+      </View>
       <FlatList
         data={results}
         renderItem={({ item }) => (
@@ -81,32 +91,22 @@ const KeywordSearch: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  searchContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  searchTab: {
-    flex: 1,
-    paddingVertical: 10,
-    backgroundColor: "#EDEDED",
-    alignItems: "center",
-    borderRadius: 8,
-    marginHorizontal: 5,
-  },
-  searchTabText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#5A5A5A",
-  },
-  input: {
+  inputContainer: {
     marginTop: 10,
-    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
     borderColor: "#ccc",
     borderWidth: 3,
     borderRadius: 30,
     paddingHorizontal: 20,
-    marginBottom: 16,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 50,
   },
   itemContainer: {
     margin: 8,
@@ -114,16 +114,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingBottom: 16,
-  },
-  movieTitle: {
-    marginTop: 8,
-    fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  movieRating: {
-    fontSize: 12,
-    color: "#777",
   },
 });
 
