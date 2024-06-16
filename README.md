@@ -6,7 +6,7 @@ Proyek ini merupakan aplikasi pengelolaan film sederhana yang dikembangkan mengg
 ## Screenshots
 
 <p float="left">
-  <img src="https://github.com/sumber-rejeki/TKM11-TodoApp/blob/3c31c5eeac8357f89d7d28a1a6ed94a950139444/ss.jpg?raw=true" alt="Night" width="400" height="200"/>
+  <img src="https://github.com/volumeee/ProgateMovieApp/blob/03c6ec904325f784780442d19ea629b0e1029313/doc.mp4?raw=true" alt="Night" width="400" height="800"/>
 </p>
 
 
