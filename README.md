@@ -5,9 +5,7 @@ Proyek ini merupakan aplikasi pengelolaan film sederhana yang dikembangkan mengg
 
 ## Screenshots
 
-<p float="left">
-  <img src="https://github.com/volumeee/ProgateMovieApp/blob/03c6ec904325f784780442d19ea629b0e1029313/doc.mp4?raw=true" alt="Night" width="400" height="800"/>
-</p>
+[Klik di sini untuk menonton video di YouTube](https://www.youtube.com/watch?v=99o0y8YvWkk)
 
 
 ## Instalasi
