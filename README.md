@@ -5,7 +5,9 @@ Proyek ini merupakan aplikasi pengelolaan film sederhana yang dikembangkan mengg
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+<p float="left">
+  <img src="https://github.com/sumber-rejeki/TKM11-TodoApp/blob/3c31c5eeac8357f89d7d28a1a6ed94a950139444/ss.jpg?raw=true" alt="Night" width="400" height="200"/>
+</p>
 
 
 ## Instalasi
