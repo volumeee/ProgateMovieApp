@@ -7,38 +7,45 @@ import {
   FlatList,
   Dimensions,
 } from "react-native";
-import { Movie } from "../types/app";
+import { GenreElement, Movie } from "../types/app";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MovieItem from "../components/movies/MovieItem";
+import { API_ACCESS_TOKEN } from "@env";
 
 const win = Dimensions.get("window");
-export default function Favorite(): JSX.Element {
+export default function Genre({ route }: any): JSX.Element {
+  const { id, name } = route.params;
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const getFavorites = async (): Promise<void> => {
-    try {
-      const initialData: string | null = await AsyncStorage.getItem(
-        "@FavoriteList"
-      );
+  const getMovieByGenre = (): void => {
+    const url = `https://api.themoviedb.org/3/discover/movie?with_genres=${id}`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${API_ACCESS_TOKEN}`,
+      },
+    };
 
-      let favMovieList: Movie[] = [];
-
-      if (initialData !== null) {
-        favMovieList = JSON.parse(initialData);
-      }
-
-      setMovies(favMovieList);
-    } catch (error) {
-      console.log(error);
-    }
+    fetch(url, options)
+      .then(async (response) => await response.json())
+      .then((response) => {
+        setMovies(response.results);
+      })
+      .catch((errorResponse) => {
+        console.log(errorResponse);
+      });
   };
 
   useEffect(() => {
-    getFavorites();
-  }, [movies]);
+    getMovieByGenre();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 20 }}>
+        Result of {name} Genre
+      </Text>
       <FlatList
         style={{ marginTop: 20 }}
         data={movies}

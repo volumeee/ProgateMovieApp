@@ -1,17 +1,16 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Home from "../screens/Home";
+import Genre from "../screens/Genre";
 import MovieDetail from "../screens/MovieDetail";
+import Search from "../screens/Search";
 
 const Stack = createNativeStackNavigator();
 
-function HomeStackNavigation(): JSX.Element {
+function SearchStackNavigation(): JSX.Element {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="searching">
       <Stack.Screen
-        name="home"
-        component={Home}
+        name="searching"
+        component={Search}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -19,8 +18,13 @@ function HomeStackNavigation(): JSX.Element {
         component={MovieDetail}
         options={{ headerBackVisible: true, headerTitle: "Detail" }}
       />
+      <Stack.Screen
+        name="genre"
+        component={Genre}
+        options={{ headerBackVisible: true, headerTitle: "Search by Genre" }}
+      />
     </Stack.Navigator>
   );
 }
 
-export default HomeStackNavigation;
+export default SearchStackNavigation;

@@ -1,17 +1,22 @@
-// screens/Search.js (or any other appropriate directory)
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
 import KeywordSearch from "../components/search/KeywordSearch";
 import CategorySearch from "../components/search/CategorySearch";
 
-const Search = () => {
-  const [selectedBar, setSelectedBar] = useState("keyword");
+export default function Search(): JSX.Element {
+  const [selectedBar, setSelectedBar] = useState<string>("keyword");
 
   return (
-    <View style={styles.container}>
-      <View>
+    <SafeAreaView>
+      <View style={styles.container}>
         <View style={styles.topBarContainer}>
-          {["keyword", "category"].map((item, index) => (
+          {["keyword", "category"].map((item: string, index: number) => (
             <TouchableOpacity
               key={item}
               activeOpacity={0.9}
@@ -23,7 +28,9 @@ const Search = () => {
                 borderTopRightRadius: index === 1 ? 100 : 0,
                 borderBottomRightRadius: index === 1 ? 100 : 0,
               }}
-              onPress={() => setSelectedBar(item)}
+              onPress={() => {
+                setSelectedBar(item);
+              }}
             >
               <Text style={styles.topBarLabel}>{item}</Text>
             </TouchableOpacity>
@@ -31,10 +38,9 @@ const Search = () => {
         </View>
         {selectedBar === "keyword" ? <KeywordSearch /> : <CategorySearch />}
       </View>
-    </View>
+    </SafeAreaView>
   );
-};
-
+}
 const styles = StyleSheet.create({
   container: {
     padding: 16,
@@ -57,5 +63,3 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
 });
-
-export default Search;

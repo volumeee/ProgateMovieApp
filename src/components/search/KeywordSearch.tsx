@@ -3,27 +3,24 @@ import {
   View,
   TextInput,
   FlatList,
+  Dimensions,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { StackActions } from "@react-navigation/native";
-import { FontAwesome } from "@expo/vector-icons"; // Assuming FontAwesome is imported correctly
-
-import MovieItem from "../MovieItem";
-import { API_ACCESS_TOKEN } from "@env";
 import { Movie } from "../../types/app";
+import MovieItem from "../movies/MovieItem";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { API_ACCESS_TOKEN } from "@env";
 
-const ITEM_WIDTH = 100;
+const win = Dimensions.get("window");
 
-const KeywordSearch: React.FC = () => {
-  const [query, setQuery] = useState<string>("");
-  const [results, setResults] = useState<Movie[]>([]);
-  const navigation = useNavigation();
+export default function KeywordSearch() {
+  const [keyword, setKeyword] = useState("");
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-  const getMovieList = (query: string): void => {
-    const path = `search/movie?query=${query}&page=1`;
-    const url = `https://api.themoviedb.org/3/${path}`;
+  const getMovieDetail = (): void => {
+    const url = `https://api.themoviedb.org/3/search/movie?query=${keyword}`;
     const options = {
       method: "GET",
       headers: {
@@ -33,88 +30,81 @@ const KeywordSearch: React.FC = () => {
     };
 
     fetch(url, options)
-      .then((response) => response.json())
-      .then((data) => setResults(data.results))
-      .catch((error) => console.error(error));
-  };
-
-  const handleSearch = () => {
-    if (query.length > 0) {
-      getMovieList(query);
-    }
+      .then(async (response) => await response.json())
+      .then((response) => {
+        setMovies(response.results);
+      })
+      .catch((errorResponse) => {
+        console.log(errorResponse);
+      });
   };
 
   return (
-    <View>
-      <View style={styles.inputContainer}>
-        <FontAwesome
-          name="search"
-          size={24}
-          color="#555"
-          style={styles.searchIcon}
-        />
+    <SafeAreaView style={{ alignItems: "center" }}>
+      <View style={styles.inputWrapper}>
         <TextInput
-          style={styles.input}
-          placeholder="Search for a keyword..."
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={handleSearch} // Trigger search when user submits
+          style={styles.textInput}
+          onChangeText={(text) => {
+            setKeyword(text);
+          }}
+          value={keyword}
+          placeholder="Search movies..."
         />
+        <TouchableOpacity onPress={getMovieDetail} style={styles.iconWrapper}>
+          <Ionicons name="search" size={24} color="black" />
+        </TouchableOpacity>
       </View>
+
       <FlatList
-        data={results}
+        style={{
+          marginTop: 20,
+          marginBottom: 420,
+          width: win.width,
+        }}
+        contentContainerStyle={{
+          alignItems: "center",
+        }}
+        data={movies}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.itemContainer}
-            onPress={() => {
-              console.log("Navigating to MovieDetail with ID:", item.id);
-              navigation.dispatch(
-                StackActions.push("MovieDetail", { id: item.id })
-              );
-            }}
-          >
+          <View style={{ marginBottom: 10 }}>
             <MovieItem
               movie={item}
-              size={{ width: ITEM_WIDTH, height: 160 }}
-              coverType="poster"
-              onPress={() => item}
+              size={{
+                width: 100,
+                height: 160,
+              }}
+              coverType={"poster"}
             />
-          </TouchableOpacity>
+          </View>
         )}
-        keyExtractor={(item) => `${item.id}`}
         numColumns={3}
-        contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item.id.toString()}
       />
-    </View>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    marginTop: 10,
-    flexDirection: "row",
+  inputWrapper: {
+    width: "100%",
+    position: "relative",
+    justifyContent: "center",
     alignItems: "center",
-    marginBottom: 16,
-    borderColor: "#ccc",
-    borderWidth: 3,
-    borderRadius: 30,
-    paddingHorizontal: 20,
+    paddingHorizontal: 8,
+    marginVertical: 10,
   },
-  searchIcon: {
-    marginRight: 10,
+  textInput: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 40,
+    borderRadius: 999,
+    width: "100%",
   },
-  input: {
-    flex: 1,
-    height: 50,
-  },
-  itemContainer: {
-    margin: 8,
+  iconWrapper: {
+    position: "absolute",
+    left: 20,
+    justifyContent: "center",
     alignItems: "center",
-  },
-  list: {
-    paddingBottom: 16,
   },
 });
-
-export default KeywordSearch;

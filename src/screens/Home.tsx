@@ -1,14 +1,14 @@
+import React from "react";
 import {
   View,
   Text,
+  StyleSheet,
   Button,
   ScrollView,
   StatusBar,
-  StyleSheet,
 } from "react-native";
-import React from "react";
-import type { MovieListProps } from "../types/app";
-import MovieList from "../components/MovieList";
+import { MovieListProps } from "../types/app";
+import MovieList from "../components/movies/MovieList";
 
 const movieLists: MovieListProps[] = [
   {
@@ -32,23 +32,24 @@ const movieLists: MovieListProps[] = [
     coverType: "poster",
   },
 ];
-const Home = (): JSX.Element => {
+
+export default function Home(): JSX.Element {
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView>
       <View style={styles.container}>
         {movieLists.map((movieList) => (
           <MovieList
             title={movieList.title}
             path={movieList.path}
             coverType={movieList.coverType}
-            key={movieList.title}
+            key={movieList.title as string}
           />
         ))}
         <StatusBar translucent={false} />
       </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -58,5 +59,3 @@ const styles = StyleSheet.create({
     rowGap: 16,
   },
 });
-
-export default Home;

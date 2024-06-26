@@ -1,6 +1,12 @@
 export interface MovieListProps {
-  title: string;
-  path: string;
+  title: String;
+  path: String;
+  coverType: "poster" | "backdrop";
+}
+
+export interface MovieItemProps {
+  movie: Movie;
+  size: { width: number; height: number };
   coverType: "poster" | "backdrop";
 }
 
@@ -40,8 +46,11 @@ export interface Movie {
   vote_count: number;
 }
 
-export interface MovieItemProps {
-  movie: Movie;
-  size: { width: number; height: number };
-  coverType: "poster" | "backdrop";
+export interface Genre {
+  genres: GenreElement[];
+}
+
+export interface GenreElement {
+  id: number;
+  name: string;
 }

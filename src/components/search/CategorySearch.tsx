@@ -1,162 +1,101 @@
-import React, { useState } from "react";
+import { API_ACCESS_TOKEN } from "@env";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
-  TouchableOpacity,
   ScrollView,
-  Alert,
+  SafeAreaView,
   FlatList,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
-import { StackActions, useNavigation } from "@react-navigation/native"; // Import navigation utilities
-import { API_ACCESS_TOKEN } from "@env";
+import { Genre, GenreElement } from "../../types/app";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
-const categories: string[] = [
-  "Action",
-  "Adventure",
-  "Animation",
-  "Comedy",
-  "Crime",
-  "Documentary",
-  "Drama",
-  "Family",
-  "Fantasy",
-  "History",
-  "Horror",
-  "Music",
-  "Mystery",
-  "Romance",
-  "Science Fiction",
-  "TV Movie",
-  "Thriller",
-  "War",
-  "Western",
-];
+const win = Dimensions.get("window");
+export default function CategorySearch() {
+  const [genres, setGenres] = useState<Genre>();
+  const [selectedGenre, setSelectedGenre] = useState<GenreElement>();
 
-const CategorySearch = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [results, setResults] = useState<any[]>([]); // State to store fetched movie results
   const navigation = useNavigation();
+  const pushAction = StackActions.push("genre", {
+    id: selectedGenre?.id,
+    name: selectedGenre?.name,
+  });
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
-  };
-
-  const getMovieList = (query: string) => {
-    const path = `search/movie?query=${query}&page=1`;
-    const url = `https://api.themoviedb.org/3/${path}`;
+  const getGenres = (): void => {
+    const url = `https://api.themoviedb.org/3/genre/movie/list`;
     const options = {
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization: `Bearer ${API_ACCESS_TOKEN}`, // Replace with your actual API access token
+        Authorization: `Bearer ${API_ACCESS_TOKEN}`,
       },
     };
 
     fetch(url, options)
-      .then((response) => response.json())
-      .then((data) => {
-        setResults(data.results); // Set fetched results into state
-        console.log(data);
+      .then(async (response) => await response.json())
+      .then((response) => {
+        setGenres(response);
       })
-      .catch((error) => console.error(error));
+      .catch((errorResponse) => {
+        console.log(errorResponse);
+      });
   };
 
-  const handleSearch = () => {
-    if (selectedCategory) {
-      // Perform API call with selectedCategory
-      getMovieList(selectedCategory);
-    } else {
-      Alert.alert("Category not selected", "Please select a category.");
-    }
-  };
-
-  const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => {
-        console.log("Navigating to MovieDetail with ID:", item.id);
-        navigation.dispatch(StackActions.push("MovieDetail", { id: item.id }));
-      }}
-    >
-      {/* Replace MovieItem with your actual component for displaying movie details */}
-      <Text>{item.title}</Text>
-    </TouchableOpacity>
-  );
+  useEffect(() => {
+    getGenres();
+  }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.categoryContainer}>
-        {categories.map((category: string, index: number) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.button}
-            onPress={() => handleCategorySelect(category)}
-          >
-            <Text style={styles.buttonText}>{category}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-        <Text style={styles.searchButtonText}>Search</Text>
+    <SafeAreaView style={{ alignItems: "center" }}>
+      <TouchableOpacity
+        onPress={() => {
+          if (selectedGenre != undefined) {
+            navigation.dispatch(pushAction);
+          }
+        }}
+      >
+        <View
+          style={{
+            width: win.width - 40,
+            backgroundColor: "#8978A4",
+            padding: 20,
+            margin: 10,
+            borderRadius: 999,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "white" }}>Search</Text>
+        </View>
       </TouchableOpacity>
-    </ScrollView>
+      <FlatList
+        style={{ marginBottom: 400, width: win.width - 40 }}
+        data={genres?.genres}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedGenre(item);
+            }}
+          >
+            <View
+              style={{
+                width: win.width / 2 - 40,
+                backgroundColor:
+                  item.id === selectedGenre?.id ? "#8978A4" : "#C0B4D5",
+                padding: 20,
+                margin: 10,
+                borderRadius: 999,
+                alignItems: "center",
+              }}
+              key={item.id}
+            >
+              <Text style={{ color: "white" }}>{item.name}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        numColumns={2}
+      />
+    </SafeAreaView>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 20,
-    alignItems: "center",
-  },
-  categoryContainer: {
-    width: "90%",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  button: {
-    width: "48%",
-    marginVertical: 6,
-    paddingVertical: 10,
-    backgroundColor: "#DCCBFF",
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    fontSize: 16,
-    color: "#4A3F90",
-  },
-  searchButton: {
-    width: "90%",
-    paddingVertical: 15,
-    marginVertical: 20,
-    backgroundColor: "#7F58FF",
-    borderRadius: 20,
-    alignItems: "center",
-  },
-  searchButtonText: {
-    fontSize: 18,
-    color: "#FFF",
-  },
-  itemContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: 5,
-    padding: 10,
-    backgroundColor: "#F0F0F0",
-    borderRadius: 5,
-    height: 150,
-  },
-  list: {
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
-});
-
-export default CategorySearch;
+}
