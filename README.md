@@ -3,9 +3,9 @@
 Proyek ini merupakan aplikasi pengelolaan film sederhana yang dikembangkan menggunakan framework React Native. Aplikasi ini memungkinkan pengguna untuk melihat daftar film, melakukan pencarian, dan menambahkan ke daftar favorit.
 
 
-## Screenshots
+## Demo Apps
 
-[Klik di sini untuk menonton video di YouTube](https://www.youtube.com/watch?v=99o0y8YvWkk)
+https://github.com/volumeee/ProgateMovieApp/assets/57589007/6262a723-3704-4f85-8c67-0a632ee4d135
 
 
 ## Instalasi
