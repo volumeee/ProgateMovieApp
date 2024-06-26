@@ -13,6 +13,9 @@ import { StackActions, useNavigation } from "@react-navigation/native";
 function MovieItem({ movie, size, coverType }: MovieItemProps): JSX.Element {
   const navigation = useNavigation();
   const pushAction = StackActions.push("movieDetail", { id: movie.id });
+
+  const roundedVoteAverage = movie.vote_average.toFixed(1);
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -37,7 +40,7 @@ function MovieItem({ movie, size, coverType }: MovieItemProps): JSX.Element {
           <Text style={styles.movieTitle}>{movie.title}</Text>
           <View style={styles.ratingContainer}>
             <FontAwesome name="star" size={16} color="yellow" />
-            <Text style={styles.rating}>{movie.vote_average}</Text>
+            <Text style={styles.rating}>{roundedVoteAverage}</Text>
           </View>
         </LinearGradient>
       </ImageBackground>

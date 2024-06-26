@@ -21,6 +21,8 @@ export default function MovieDetail({ route }: any): JSX.Element {
   const [movie, setMovie] = useState<Movie>();
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const roundedVoteAverage = movie?.vote_average.toFixed(1);
+
   const checkFavorite = async (id: number): Promise<void> => {
     try {
       const initialData: string | null =
@@ -158,7 +160,7 @@ export default function MovieDetail({ route }: any): JSX.Element {
             >
               <View style={styles.ratingContainer}>
                 <FontAwesome name="star" size={16} color="yellow" />
-                <Text style={styles.rating}>{movie?.vote_average}</Text>
+                <Text style={styles.rating}>{roundedVoteAverage}</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
