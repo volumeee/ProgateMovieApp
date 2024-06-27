@@ -58,7 +58,8 @@ export default function KeywordSearch() {
       <FlatList
         style={{
           marginTop: 20,
-          marginBottom: 420,
+          marginLeft: 16,
+          marginBottom: 400,
           width: win.width,
         }}
         contentContainerStyle={{
@@ -66,7 +67,7 @@ export default function KeywordSearch() {
         }}
         data={movies}
         renderItem={({ item }) => (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, marginRight: 10 }}>
             <MovieItem
               movie={item}
               size={{

@@ -47,10 +47,10 @@ export default function Genre({ route }: any): JSX.Element {
         Result of {name} Genre
       </Text>
       <FlatList
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 20, marginLeft: 20 }}
         data={movies}
         renderItem={({ item }) => (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, marginRight: 10 }}>
             <MovieItem
               movie={item}
               size={{

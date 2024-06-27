@@ -17,9 +17,8 @@ export default function Favorite(): JSX.Element {
 
   const getFavorites = async (): Promise<void> => {
     try {
-      const initialData: string | null = await AsyncStorage.getItem(
-        "@FavoriteList"
-      );
+      const initialData: string | null =
+        await AsyncStorage.getItem("@FavoriteList");
 
       let favMovieList: Movie[] = [];
 
@@ -40,10 +39,10 @@ export default function Favorite(): JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 20, marginLeft: 15 }}
         data={movies}
         renderItem={({ item }) => (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, marginRight: 15 }}>
             <MovieItem
               movie={item}
               size={{

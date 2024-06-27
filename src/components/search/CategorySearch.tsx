@@ -70,7 +70,7 @@ export default function CategorySearch() {
         </View>
       </TouchableOpacity>
       <FlatList
-        style={{ marginBottom: 400, width: win.width - 40 }}
+        style={{ marginBottom: 400, width: win.width - 60 }}
         data={genres?.genres}
         renderItem={({ item }) => (
           <TouchableOpacity
@@ -84,7 +84,7 @@ export default function CategorySearch() {
                 backgroundColor:
                   item.id === selectedGenre?.id ? "#8978A4" : "#C0B4D5",
                 padding: 20,
-                margin: 10,
+                margin: 5,
                 borderRadius: 999,
                 alignItems: "center",
               }}
